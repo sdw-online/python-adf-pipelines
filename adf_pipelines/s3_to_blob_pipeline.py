@@ -4,6 +4,11 @@ import boto3
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 from dotenv import load_dotenv
 import os
+from azure.identity import DefaultAzureCredential
+from azure.mgmt.datafactory import DataFactoryManagementClient
+from azure.mgmt.datafactory.models import *
+from msrestazure.azure_active_directory import ServicePrincipalCredentials
+
 
 load_dotenv()
 
@@ -27,13 +32,29 @@ S3_BUCKET               =   os.getenv("S3_BUCKET")
 S3_FOLDER               =   os.getenv("S3_FOLDER")
 
 
+s3_client               =   boto3()
+
 
 
 ## AZURE
 
 
-BLOB_CONTAINER_NAME     =   os.getenv("BLOB_CONTAINER_NAME")
+CONTAINER_NAME          =   os.getenv("CONTAINER_NAME")
+ACCOUNT_URL             =   os.getenv("ACCOUNT_URL")
+BLOB_NAME               =   os.getenv("BLOB_NAME")
+STORAGE_ACCOUNT_NAME    =   os.getenv("STORAGE_ACCOUNT_NAME")
+CONNECTION_STRING       =   os.getenv("CONNECTION_STRING")
 
+TENANT_ID = ""
+CLIENT_ID = ""
+CLIENT_SECRET = ""
+SUBSCRIPTION_ID = ""
+RESOURCE_GROUP_NAME = ""
+FACTORY_NAME = ""
+BLOB_STORAGE_ACCOUNT_NAME = ""
+BLOB_STORAGE_ACCOUNT_KEY = ""
+
+blob_service_client     =   BlobServiceClient()
 
 
 
