@@ -5,6 +5,7 @@ from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 from dotenv import load_dotenv
 import os
 from azure.identity import ClientSecretCredential
+from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.datafactory import DataFactoryManagementClient
 from azure.mgmt.datafactory.models import LinkedServiceResource, AzureBlobStorageLinkedService, SecureString, AzureStorageLinkedService
 
@@ -47,12 +48,24 @@ RESOURCE_GROUP_NAME                 =   os.getenv("RESOURCE_GROUP_NAME")
 DATA_FACTORY_NAME                   =   os.getenv("DATA_FACTORY_NAME")
 BLOB_STORAGE_ACCOUNT_NAME           =   os.getenv("BLOB_STORAGE_ACCOUNT_NAME")
 BLOB_STORAGE_ACCOUNT_KEY            =   os.getenv("BLOB_STORAGE_ACCOUNT_KEY")
+REGION                              =   os.getenv("REGION")
+LOCATION                            =   os.getenv("LOCATION")
 AUTHORITY_URL                       =   f'https://login.windows.net/{TENANT_ID}'
 
-credentials                         =   ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
-blob_service_client                 =   BlobServiceClient(ACCOUNT_URL)
-adf_client                          =   DataFactoryManagementClient(credentials, SUBSCRIPTION_ID)
+region_params = {"location": LOCATION}
+
+
+
+credentials                         =   ClientSecretCredential(tenant_id=TENANT_ID, client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
+resource_client                     =   ResourceManagementClient(credentials, SUBSCRIPTION_ID)
+blob_service_client                 =   BlobServiceClient(ACCOUNT_URL, region=REGION)
+adf_client                          =   DataFactoryManagementClient(credentials, subscription_id=SUBSCRIPTION_ID, region=REGION)
 data_factory                        =   adf_client.factories.get(RESOURCE_GROUP_NAME, DATA_FACTORY_NAME)
+
+rg_params = {'location':REGION}
+df_params = {'location':REGION}
+
+
 blob_storage_linked_service_name    =   os.getenv("LINKED_SERVICE_NAME_DEST")
 blob_storage_connection_string      =   CONNECTION_STRING
 
@@ -62,11 +75,15 @@ blob_storage_linked_service = LinkedServiceResource(
 )
 
 
-blob_storage_linked_service_request = adf_client.linked_services.create_or_update(resource_group_name=RESOURCE_GROUP_NAME, 
-                                                                                   factory_name=DATA_FACTORY_NAME,
-                                                                                   linked_service_name=blob_storage_linked_service_name,
-                                                                                   linked_service=blob_storage_linked_service
-                                                                                   )
+# blob_storage_linked_service_request = adf_client.linked_services.create_or_update(resource_group_name=RESOURCE_GROUP_NAME, 
+#                                                                                    factory_name=DATA_FACTORY_NAME,
+#                                                                                    linked_service_name=blob_storage_linked_service_name,
+#                                                                                    linked_service=blob_storage_linked_service
+#                                                                                    )
+
+
+resource_client.resource_groups.create_or_update(RESOURCE_GROUP_NAME, rg_params)
+
 
 
 
@@ -119,3 +136,13 @@ blob_storage_linked_service_request = adf_client.linked_services.create_or_updat
 
 # Create trigger to execute pipeline 
 
+
+
+
+"""
+
+RESOURCES:
+
+* Microsoft official docs: https://learn.microsoft.com/en-us/azure/data-factory/quickstart-create-data-factory-python
+
+"""
