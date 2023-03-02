@@ -6,8 +6,7 @@ from dotenv import load_dotenv
 import os
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.datafactory import DataFactoryManagementClient
-from azure.mgmt.datafactory.models import *
-from msrestazure.azure_active_directory import ServicePrincipalCredentials
+from azure.mgmt.datafactory.models import LinkedServiceResourceRequest
 
 
 load_dotenv()
@@ -25,36 +24,43 @@ load_dotenv()
 
 ## AWS 
 
-ACCESS_KEY              =   os.getenv("ACCESS_KEY")
-SECRET_ACCESS_KEY       =   os.getenv("SECRET_ACCESS_KEY")
-REGION_NAME             =   os.getenv("REGION_NAME")
-S3_BUCKET               =   os.getenv("S3_BUCKET")
-S3_FOLDER               =   os.getenv("S3_FOLDER")
+ACCESS_KEY                          =   os.getenv("ACCESS_KEY")
+SECRET_ACCESS_KEY                   =   os.getenv("SECRET_ACCESS_KEY")
+REGION_NAME                         =   os.getenv("REGION_NAME")
+S3_BUCKET                           =   os.getenv("S3_BUCKET")
+S3_FOLDER                           =   os.getenv("S3_FOLDER")
 
 
-s3_client               =   boto3()
+s3_client                           =   boto3()
 
 
 
-## AZURE
+## AZURE            
 
 
-CONTAINER_NAME          =   os.getenv("CONTAINER_NAME")
-ACCOUNT_URL             =   os.getenv("ACCOUNT_URL")
-BLOB_NAME               =   os.getenv("BLOB_NAME")
-STORAGE_ACCOUNT_NAME    =   os.getenv("STORAGE_ACCOUNT_NAME")
-CONNECTION_STRING       =   os.getenv("CONNECTION_STRING")
+CONTAINER_NAME                      =   os.getenv("CONTAINER_NAME")
+ACCOUNT_URL                         =   os.getenv("ACCOUNT_URL")
+BLOB_NAME                           =   os.getenv("BLOB_NAME")
+STORAGE_ACCOUNT_NAME                =   os.getenv("STORAGE_ACCOUNT_NAME")
+CONNECTION_STRING                   =   os.getenv("CONNECTION_STRING")
 
-TENANT_ID = ""
-CLIENT_ID = ""
-CLIENT_SECRET = ""
-SUBSCRIPTION_ID = ""
-RESOURCE_GROUP_NAME = ""
-FACTORY_NAME = ""
-BLOB_STORAGE_ACCOUNT_NAME = ""
-BLOB_STORAGE_ACCOUNT_KEY = ""
+TENANT_ID                           =   os.getenv("TENANT_ID")
+CLIENT_ID                           =   os.getenv("CLIENT_ID")
+CLIENT_SECRET                       =   os.getenv("CLIENT_SECRET")
+SUBSCRIPTION_ID                     =   os.getenv("SUBSCRIPTION_ID")
+RESOURCE_GROUP_NAME                 =   os.getenv("RESOURCE_GROUP_NAME")
+DATA_FACTORY_NAME                   =   os.getenv("DATA_FACTORY_NAME")
+BLOB_STORAGE_ACCOUNT_NAME           =   os.getenv("BLOB_STORAGE_ACCOUNT_NAME")
+BLOB_STORAGE_ACCOUNT_KEY            =   os.getenv("BLOB_STORAGE_ACCOUNT_KEY")
 
 blob_service_client     =   BlobServiceClient()
+adf_client              =   DataFactoryManagementClient()
+
+
+
+
+
+# Set up ADF client 
 
 
 
