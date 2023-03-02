@@ -6,13 +6,11 @@ from dotenv import load_dotenv
 import os
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.datafactory import DataFactoryManagementClient
-from azure.mgmt.datafactory.models import LinkedServiceResourceRequest
+from azure.mgmt.datafactory.models import LinkedServiceResource
+
 
 
 load_dotenv()
-
-
-
 
 
 
@@ -30,8 +28,7 @@ REGION_NAME                         =   os.getenv("REGION_NAME")
 S3_BUCKET                           =   os.getenv("S3_BUCKET")
 S3_FOLDER                           =   os.getenv("S3_FOLDER")
 
-
-s3_client                           =   boto3()
+# s3_client                           =   boto3()
 
 
 
@@ -53,14 +50,31 @@ DATA_FACTORY_NAME                   =   os.getenv("DATA_FACTORY_NAME")
 BLOB_STORAGE_ACCOUNT_NAME           =   os.getenv("BLOB_STORAGE_ACCOUNT_NAME")
 BLOB_STORAGE_ACCOUNT_KEY            =   os.getenv("BLOB_STORAGE_ACCOUNT_KEY")
 
-blob_service_client     =   BlobServiceClient()
-adf_client              =   DataFactoryManagementClient()
+credentials                         =   DefaultAzureCredential()
+blob_service_client                 =   BlobServiceClient(ACCOUNT_URL)
+adf_client                          =   DataFactoryManagementClient(credentials, SUBSCRIPTION_ID)
+
+data_factory                        =   adf_client.factories.get(RESOURCE_GROUP_NAME, DATA_FACTORY_NAME)
+
+
+blob_storage_linked_service_name = "azure_blob_storage_dest_001"
+blob_storage_connection_string = CONNECTION_STRING
+
+
+# print(data_factory)
+
+
+
+# blob_storage_linked_service = LinkedServiceResource()
 
 
 
 
 
-# Set up ADF client 
+ 
+# Create an Azure credentials object 
+
+
 
 
 
