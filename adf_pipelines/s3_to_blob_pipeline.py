@@ -4,9 +4,9 @@ import boto3
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 from dotenv import load_dotenv
 import os
-from azure.identity import InteractiveBrowserCredential
+from azure.identity import ClientSecretCredential
 from azure.mgmt.datafactory import DataFactoryManagementClient
-from azure.mgmt.datafactory.models import LinkedServiceResource
+from azure.mgmt.datafactory.models import LinkedServiceResource, AzureBlobStorageLinkedService, SecureString, AzureStorageLinkedService
 
 
 
@@ -34,13 +34,11 @@ S3_FOLDER                           =   os.getenv("S3_FOLDER")
 
 ## AZURE            
 
-
 CONTAINER_NAME                      =   os.getenv("CONTAINER_NAME")
 ACCOUNT_URL                         =   os.getenv("ACCOUNT_URL")
 BLOB_NAME                           =   os.getenv("BLOB_NAME")
 STORAGE_ACCOUNT_NAME                =   os.getenv("STORAGE_ACCOUNT_NAME")
 CONNECTION_STRING                   =   os.getenv("CONNECTION_STRING")
-
 TENANT_ID                           =   os.getenv("TENANT_ID")
 CLIENT_ID                           =   os.getenv("CLIENT_ID")
 CLIENT_SECRET                       =   os.getenv("CLIENT_SECRET")
@@ -49,30 +47,18 @@ RESOURCE_GROUP_NAME                 =   os.getenv("RESOURCE_GROUP_NAME")
 DATA_FACTORY_NAME                   =   os.getenv("DATA_FACTORY_NAME")
 BLOB_STORAGE_ACCOUNT_NAME           =   os.getenv("BLOB_STORAGE_ACCOUNT_NAME")
 BLOB_STORAGE_ACCOUNT_KEY            =   os.getenv("BLOB_STORAGE_ACCOUNT_KEY")
-
 AUTHORITY_URL                       =   f'https://login.windows.net/{TENANT_ID}'
 
-
-credentials                         =   InteractiveBrowserCredential()
+credentials                         =   ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
 blob_service_client                 =   BlobServiceClient(ACCOUNT_URL)
 adf_client                          =   DataFactoryManagementClient(credentials, SUBSCRIPTION_ID)
-
 data_factory                        =   adf_client.factories.get(RESOURCE_GROUP_NAME, DATA_FACTORY_NAME)
-
-
 blob_storage_linked_service_name    =   os.getenv("LINKED_SERVICE_NAME_DEST")
 blob_storage_connection_string      =   CONNECTION_STRING
 
-
-# print(data_factory)
-
-
-
 blob_storage_linked_service = LinkedServiceResource(
-    type='AzureBlobStorage',
-    type_properties={
-        'connectionString': CONNECTION_STRING
-    }
+    properties=AzureStorageLinkedService(connection_string=CONNECTION_STRING
+    )
 )
 
 
